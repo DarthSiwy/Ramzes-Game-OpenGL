@@ -9,7 +9,10 @@
 #include <ft2build.h>
 
 #include "camera.h"
-#include "axis.h"
+//#include "axis.h"
+#include "AxisRenderer.h"
+
+
 
 #include <map>
 #include <cmath>
@@ -61,21 +64,7 @@ int main() {
     }
 
     // SHADER
-    Shader mainShader("shader_vertex", "shader_fragment");  
-
-    // AXIS 
-    float axisVertices[36];
-    make_axis(axisVertices);
-    unsigned int axisVBO, axisVAO;
-    glGenVertexArrays(1, &axisVAO);
-    glGenBuffers(1, &axisVBO);
-    glBindVertexArray(axisVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, axisVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(axisVertices), axisVertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(2);
+    Shader mainShader("shader_vertex", "shader_fragment"); 
 
     // TEXTURES
     unsigned int texture1;
@@ -95,7 +84,7 @@ int main() {
     else std::cout << "Failed to load texture" << std::endl;
     stbi_image_free(data);
     mainShader.use();
-    mainShader.setInt("texture1", 0);
+    mainShader.setInt("texture1", 0);  
 
     // -----------------------------------------------------------------------------------------
     // VARIABLES 
@@ -112,9 +101,10 @@ int main() {
     // RENDERING
     glfwSwapInterval(1);
 
-    // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    AxisRenderer axisRenderer;
+
+  // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     while (!glfwWindowShouldClose(window)) {
         // TIME
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -133,8 +123,8 @@ int main() {
         // Draw the axis lines
         glm::mat4 model = glm::mat4(1.0f);
         mainShader.setMat4("model", model);
-        glBindVertexArray(axisVAO);
-        glDrawArrays(GL_LINES, 0, 6);
+        
+        //axisRenderer.render();
 
         // Activate Textures
         glActiveTexture(GL_TEXTURE0);
@@ -147,20 +137,17 @@ int main() {
         mainShader.setMat4("view", view);
         //camera.DisplayPosition();
 
+        axisRenderer.render(mainShader, view, projection);
+
         // SWAP BUFFERS
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    // DELETE BUFFERS
-    glDeleteVertexArrays(1, &axisVAO);
-    glDeleteBuffers(1, &axisVBO);
     glfwTerminate();
     return 0;
 }
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 // CAMERA MOVEMENT
 void processInput(GLFWwindow* window) {
