@@ -151,17 +151,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="border.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="axis_r.cpp" />
+    <ClCompile Include="axis.cpp" />
     <ClCompile Include="pyramid.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="border.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="pyramid.h" />
     <ClInclude Include="shader_m.h" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="axis_r.h" />
+    <ClInclude Include="axis.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader_fragment" />

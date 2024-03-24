@@ -28,7 +28,17 @@ void Pyramid::render(const Shader& shader, const glm::mat4& view, const glm::mat
     //glBindVertexArray(0);
 }
 
+void Pyramid::move_pyramid(float pos_x, float pos_y, float pos_z) {
+    for (int j = 0; j < 144; j += 8) {
+        vertices[j + 0] += pos_x;
+        vertices[j + 1] += pos_y;
+        vertices[j + 2] += pos_z;
+    }
+}
+
 Pyramid::~Pyramid() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }
+
+

@@ -9,8 +9,9 @@
 #include <ft2build.h>
 
 #include "camera.h"
-#include "axis_r.h"
+#include "axis.h"
 #include "pyramid.h"
+#include "border.h"
 
 #include <map>
 #include <cmath>
@@ -65,7 +66,8 @@ int main() {
     //Shader shader_axis("shader_vertex_axis", "shader_fragment_axis");
     
     Axis axis;
-    Pyramid pyramid;
+    Border border;
+    Pyramid pyramids[47];
 
     // TEXTURES
     unsigned int texture1;
@@ -84,7 +86,36 @@ int main() {
     }
     else std::cout << "Failed to load texture" << std::endl;
     stbi_image_free(data);
-    
+
+    int board[10][8] = {
+        {-1, -1, -1, -1, -1, -1, -1, -1},
+        {-1,  0,  1,  2,  3,  4,  5, -1},
+        {-1,  6,  7,  8,  9, 10, 11, -1},
+        {-1, 12, 13, 14, 15, 16, 17, -1},
+        {-1, 18, 19, 20, 21, 22, 23, -1},
+        {-1, 24, 25, 26, 27, 28, 29, -1},
+        {-1, 30, 31, 32, 33, 34, 35, -1},
+        {-1, 36, 37, 38, 39, 40, 41, -1},
+        {-1, 42, 43, 44, 45, 46, 77, -1},
+        {-1, -1, -1, -1, -1, -1, -1, -1}
+    };
+
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 8; j++) std::cout << board[i][j] << " \t";
+        std::cout << "\n";
+    }
+
+    int x = 0, z = 0, step = 2, index = 0;    
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 6; j++) {
+            pyramids[index].move_pyramid(x, 0, z);
+            x += step;
+            index++;
+            if (index == 47) j = 6;
+        }
+        z += step;
+        x = 0;
+    }
 
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -112,7 +143,11 @@ int main() {
         shader_main.setMat4("model", model);  
       
         axis.render(shader_main, view, projection);
-        pyramid.render(shader_main, view, projection);
+        border.render(shader_main, view, projection);
+
+        for (int i = 0; i < 47; i++) {
+            pyramids[i].render(shader_main, view, projection);
+        }
 
         // SWAP BUFFERS
         glfwSwapBuffers(window);

@@ -11,13 +11,13 @@ class Axis {
         float axis_vertices[36] = {
             // Positions            // Colors
              0.0f,  0.0f,  0.0f,    1.0f,  0.0f,  0.0f, // X-axis
-             4.0f,  0.0f,  0.0f,    1.0f,  0.0f,  0.0f,
+             14.0f,  0.0f,  0.0f,    1.0f,  0.0f,  0.0f,
 
              0.0f,  0.0f,  0.0f,    0.0f,  1.0f,  0.0f, // Y-axis
-             0.0f,  4.0f,  0.0f,    0.0f,  1.0f,  0.0f,
+             0.0f,  8.0f,  0.0f,    0.0f,  1.0f,  0.0f,
 
              0.0f,  0.0f,  0.0f,    0.0f,  0.0f,  1.0f, // Z-axis
-             0.0f,  0.0f,  4.0f,    0.0f,  0.0f,  1.0f
+             0.0f,  0.0f,  18.0f,    0.0f,  0.0f,  1.0f
         };     
 
         Axis();

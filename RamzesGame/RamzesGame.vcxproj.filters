@@ -21,10 +21,13 @@
     <ClCompile Include="glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="axis_r.cpp">
+    <ClCompile Include="axis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pyramid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="border.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,10 +41,13 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="axis_r.h">
+    <ClInclude Include="axis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pyramid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="border.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

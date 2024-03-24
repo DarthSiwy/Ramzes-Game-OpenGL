@@ -8,7 +8,7 @@
 
 class Pyramid {
 public:
-    float vertices[288] = {
+    float vertices[144] = {
         //     POSITION              COLOR           TEXTURE   
         -1.0f, 0.0f, -1.0f,    1.0f, 1.0f, 0.0f,    0.0f, 1.0f,
          1.0f, 0.0f, -1.0f,    1.0f, 1.0f, 0.0f,    1.0f, 1.0f,
@@ -38,6 +38,8 @@ public:
     Pyramid();
     void render(const Shader& shader, const glm::mat4& view, const glm::mat4& projection) const;
     ~Pyramid();
+
+    void move_pyramid(float pos_x, float pos_y, float pos_z);
 
 private:
     unsigned int VAO, VBO;
