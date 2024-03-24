@@ -154,9 +154,11 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="axis_r.cpp" />
+    <ClCompile Include="pyramid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="pyramid.h" />
     <ClInclude Include="shader_m.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="axis_r.h" />

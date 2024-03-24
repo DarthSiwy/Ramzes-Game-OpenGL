@@ -10,6 +10,7 @@
 
 #include "camera.h"
 #include "axis_r.h"
+#include "pyramid.h"
 
 #include <map>
 #include <cmath>
@@ -60,8 +61,11 @@ int main() {
         return -1;
     }
 
-    Shader mainShader("shader_vertex", "shader_fragment"); 
+    Shader shader_main("shader_vertex", "shader_fragment"); 
+    //Shader shader_axis("shader_vertex_axis", "shader_fragment_axis");
+    
     Axis axis;
+    Pyramid pyramid;
 
     // TEXTURES
     unsigned int texture1;
@@ -73,43 +77,42 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    data = stbi_load("resources/textures/rectangle.png", &width, &height, &nrChannels, 4);
+    data = stbi_load("resources/textures/wall.jpg", &width, &height, &nrChannels, 4);
     if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else std::cout << "Failed to load texture" << std::endl;
     stbi_image_free(data);
-    mainShader.use();
-    mainShader.setInt("texture1", 0);      
+    
 
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     glfwSwapInterval(1);
     while (!glfwWindowShouldClose(window)) {
-        float currentFrame = static_cast<float>(glfwGetTime());
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
         processInput(window);
-        mainShader.use();
-
+        shader_main.use();
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-           
-        // Activate Textures
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
 
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        mainShader.setMat4("projection", projection);
-        glm::mat4 view = camera.GetViewMatrix();
-        mainShader.setMat4("view", view);
+        // TIME 
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        // MATRIX
         glm::mat4 model = glm::mat4(1.0f);
-        mainShader.setMat4("model", model);      
-
-        axis.render(mainShader, view, projection);
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        
+        shader_main.setMat4("projection", projection);
+        shader_main.setMat4("view", view);
+        shader_main.setMat4("model", model);  
+      
+        axis.render(shader_main, view, projection);
+        pyramid.render(shader_main, view, projection);
 
         // SWAP BUFFERS
         glfwSwapBuffers(window);

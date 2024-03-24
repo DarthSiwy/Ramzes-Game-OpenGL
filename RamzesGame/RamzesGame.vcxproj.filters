@@ -24,6 +24,9 @@
     <ClCompile Include="axis_r.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pyramid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="axis_r.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pyramid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
