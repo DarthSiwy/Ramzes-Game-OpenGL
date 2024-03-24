@@ -9,10 +9,7 @@
 #include <ft2build.h>
 
 #include "camera.h"
-//#include "axis.h"
-#include "AxisRenderer.h"
-
-
+#include "axis_r.h"
 
 #include <map>
 #include <cmath>
@@ -63,8 +60,8 @@ int main() {
         return -1;
     }
 
-    // SHADER
     Shader mainShader("shader_vertex", "shader_fragment"); 
+    Axis axis;
 
     // TEXTURES
     unsigned int texture1;
@@ -84,29 +81,12 @@ int main() {
     else std::cout << "Failed to load texture" << std::endl;
     stbi_image_free(data);
     mainShader.use();
-    mainShader.setInt("texture1", 0);  
+    mainShader.setInt("texture1", 0);      
 
-    // -----------------------------------------------------------------------------------------
-    // VARIABLES 
-
-    // CAMERA POSITION
-    //camera.Yaw -= 30.0f;
-    //camera.Pitch -= 30.0f;
-    //camera.updateCameraVectors();
-
-    // RANDOM
-    std::random_device rd;
-    std::mt19937 gen(rd());
-
-    // RENDERING
+  // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     glfwSwapInterval(1);
-
-    AxisRenderer axisRenderer;
-
-  // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     while (!glfwWindowShouldClose(window)) {
-        // TIME
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -115,29 +95,21 @@ int main() {
 
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
-
-        // Background
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Draw the axis lines
-        glm::mat4 model = glm::mat4(1.0f);
-        mainShader.setMat4("model", model);
-        
-        //axisRenderer.render();
-
+           
         // Activate Textures
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
 
-        // Camera position default
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         mainShader.setMat4("projection", projection);
         glm::mat4 view = camera.GetViewMatrix();
         mainShader.setMat4("view", view);
-        //camera.DisplayPosition();
+        glm::mat4 model = glm::mat4(1.0f);
+        mainShader.setMat4("model", model);      
 
-        axisRenderer.render(mainShader, view, projection);
+        axis.render(mainShader, view, projection);
 
         // SWAP BUFFERS
         glfwSwapBuffers(window);

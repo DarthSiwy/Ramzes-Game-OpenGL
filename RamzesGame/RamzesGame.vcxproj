@@ -153,13 +153,13 @@
   <ItemGroup>
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="AxisRenderer.cpp" />
+    <ClCompile Include="axis_r.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="shader_m.h" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="AxisRenderer.h" />
+    <ClInclude Include="axis_r.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader_fragment" />
