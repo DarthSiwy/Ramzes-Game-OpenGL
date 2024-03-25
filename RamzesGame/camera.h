@@ -119,6 +119,11 @@ public:
             << Position.x << "\t"
             << Position.y << "\t"
             << Position.z << "\t"
+            //<< Front.x << "\t"
+            //<< Front.y << "\t"
+            //<< Front.z << "\t"
+            << Yaw << "\t"
+            //<< Pitch << "\t"
             << std::endl;
     }
 

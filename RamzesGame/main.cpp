@@ -108,7 +108,7 @@ int main() {
     int x = 0, z = 0, step = 2, index = 0;    
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 6; j++) {
-            pyramids[index].move_pyramid(x, 0, z);
+            pyramids[index].move(x, 0, z);
             x += step;
             index++;
             if (index == 47) j = 6;
@@ -116,6 +116,17 @@ int main() {
         z += step;
         x = 0;
     }
+    // CAMERA POSITION
+    camera.Position.x = 14.0f;
+    camera.Position.y = 10.0f;
+    camera.Position.z = 20.0f;
+    camera.Pitch += -40.0f;
+    camera.Yaw += -40.0f;
+    camera.updateCameraVectors();
+
+    float transitionProgress = 0.0f;
+    int done = 0;
+    
 
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -132,6 +143,7 @@ int main() {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        //camera.DisplayPosition();
 
         // MATRIX
         glm::mat4 model = glm::mat4(1.0f);
@@ -140,15 +152,19 @@ int main() {
         
         shader_main.setMat4("projection", projection);
         shader_main.setMat4("view", view);
-        shader_main.setMat4("model", model);  
+        shader_main.setMat4("model", model);
       
         axis.render(shader_main, view, projection);
         border.render(shader_main, view, projection);
 
         for (int i = 0; i < 47; i++) {
-            pyramids[i].render(shader_main, view, projection);
-        }
+            pyramids[i].render(shader_main, view, projection, model);
+        }      
 
+        if (done == 0 && glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+            pyramids[46].move_direction(2);
+        }
+        
         // SWAP BUFFERS
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -156,8 +172,8 @@ int main() {
     glfwTerminate();
     return 0;
 }
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // CAMERA MOVEMENT
 void processInput(GLFWwindow* window) {
