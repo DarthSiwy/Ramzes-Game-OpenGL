@@ -12,6 +12,8 @@
 #include "axis.h"
 #include "pyramid.h"
 #include "border.h"
+#include "functions.h"
+#include "player.h"
 
 #include <map>
 #include <cmath>
@@ -26,6 +28,43 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
+
+int find_value(std::vector<std::vector<int>>& board, int direction, const Player& player) {
+    int result = 0;
+    if (direction == 1) result = board[player.posX-1][player.posY];
+    if (direction == 2) result = board[player.posX][player.posY+1];
+    if (direction == 3) result = board[player.posX+1][player.posY];
+    if (direction == 4) result = board[player.posX][player.posY-1];
+    return result;
+}
+
+void swap_value(std::vector<std::vector<int>>& board, int direction, Player& player) {
+    int value = 0;
+    if (direction == 1) {
+        value = board[player.posX - 1][player.posY];
+        board[player.posX - 1][player.posY] = 77;
+        board[player.posX][player.posY] = value;
+        player.posX += -1;
+    }
+    if (direction == 2) {
+        value = board[player.posX][player.posY + 1];
+        board[player.posX][player.posY + 1] = 77;
+        board[player.posX][player.posY] = value;
+        player.posY += 1;
+    }
+    if (direction == 3) {
+        value = board[player.posX + 1][player.posY];
+        board[player.posX + 1][player.posY] = 77;
+        board[player.posX][player.posY] = value;
+        player.posX += 1;
+    }
+    if (direction == 4) {
+        value = board[player.posX][player.posY - 1];
+        board[player.posX][player.posY - 1] = 77;
+        board[player.posX][player.posY] = value;
+        player.posY -= 1;
+    }
+}
 
 // settings
 const unsigned int SCR_WIDTH = 1920;
@@ -62,12 +101,16 @@ int main() {
         return -1;
     }
 
-    Shader shader_main("shader_vertex", "shader_fragment"); 
-    //Shader shader_axis("shader_vertex_axis", "shader_fragment_axis");
+    Shader shader_main("shader_vertex", "shader_fragment");
     
     Axis axis;
     Border border;
+
     Pyramid pyramids[47];
+    Player player(8,6);
+
+    std::vector<std::vector<int>> board;
+    make_board(board);
 
     // TEXTURES
     unsigned int texture1;
@@ -85,25 +128,7 @@ int main() {
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else std::cout << "Failed to load texture" << std::endl;
-    stbi_image_free(data);
-
-    int board[10][8] = {
-        {-1, -1, -1, -1, -1, -1, -1, -1},
-        {-1,  0,  1,  2,  3,  4,  5, -1},
-        {-1,  6,  7,  8,  9, 10, 11, -1},
-        {-1, 12, 13, 14, 15, 16, 17, -1},
-        {-1, 18, 19, 20, 21, 22, 23, -1},
-        {-1, 24, 25, 26, 27, 28, 29, -1},
-        {-1, 30, 31, 32, 33, 34, 35, -1},
-        {-1, 36, 37, 38, 39, 40, 41, -1},
-        {-1, 42, 43, 44, 45, 46, 77, -1},
-        {-1, -1, -1, -1, -1, -1, -1, -1}
-    };
-
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 8; j++) std::cout << board[i][j] << " \t";
-        std::cout << "\n";
-    }
+    stbi_image_free(data);  
 
     int x = 0, z = 0, step = 2, index = 0;    
     for (int i = 0; i < 8; i++) {
@@ -124,9 +149,13 @@ int main() {
     camera.Yaw += -40.0f;
     camera.updateCameraVectors();
 
-    float transitionProgress = 0.0f;
-    int done = 0;
-    
+    int move_direction = 0;
+    int animation = 0;
+
+    int previousKeyState_RIGHT = GLFW_RELEASE;
+    int previousKeyState_UP = GLFW_RELEASE;
+    int previousKeyState_DOWN = GLFW_RELEASE;
+    int previousKeyState_LEFT = GLFW_RELEASE;
 
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -150,20 +179,43 @@ int main() {
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
         
+        // SHADER BIND
         shader_main.setMat4("projection", projection);
         shader_main.setMat4("view", view);
         shader_main.setMat4("model", model);
       
+        // RENDER 
         axis.render(shader_main, view, projection);
         border.render(shader_main, view, projection);
+        for (int i = 0; i < 47; i++) pyramids[i].render(shader_main, view, projection, model, animation);   
 
-        for (int i = 0; i < 47; i++) {
-            pyramids[i].render(shader_main, view, projection, model);
-        }      
+        // KEYBOARD
+        int currentKeyState_RIGHT = glfwGetKey(window, GLFW_KEY_RIGHT);
+        int currentKeyState_UP = glfwGetKey(window, GLFW_KEY_UP);
+        int currentKeyState_DOWN = glfwGetKey(window, GLFW_KEY_DOWN);
+        int currentKeyState_LEFT = glfwGetKey(window, GLFW_KEY_LEFT);
 
-        if (done == 0 && glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-            pyramids[46].move_direction(2);
+        if (animation == 0){
+            if (currentKeyState_UP == GLFW_PRESS && previousKeyState_UP == GLFW_RELEASE) move_direction = 10;
+            if (currentKeyState_RIGHT == GLFW_PRESS && previousKeyState_RIGHT == GLFW_RELEASE) move_direction = 20;
+            if (currentKeyState_DOWN == GLFW_PRESS && previousKeyState_DOWN == GLFW_RELEASE) move_direction = 30;
+            if (currentKeyState_LEFT == GLFW_PRESS && previousKeyState_LEFT == GLFW_RELEASE) move_direction = 40;
         }
+
+        if (move_direction > 9) {
+            move_direction /= 10;
+            if (find_value(board, move_direction, player) > -1) {
+                pyramids[find_value(board, move_direction, player)].move_direction(move_direction, animation);
+                swap_value(board, move_direction, player);
+                show_board(board);
+            }
+            move_direction = 0;
+        }
+
+        previousKeyState_RIGHT = currentKeyState_RIGHT;
+        previousKeyState_LEFT = currentKeyState_LEFT;
+        previousKeyState_UP = currentKeyState_UP;
+        previousKeyState_DOWN = currentKeyState_DOWN;
         
         // SWAP BUFFERS
         glfwSwapBuffers(window);

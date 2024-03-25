@@ -1,6 +1,13 @@
 #include "shader_s.h"
 #include "pyramid.h"
 
+#include <map>
+#include <cmath>
+#include <string>
+#include <vector>
+#include <random>
+#include <iostream>
+
 Pyramid::Pyramid() {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -15,7 +22,7 @@ Pyramid::Pyramid() {
     glEnableVertexAttribArray(2);
 }
 
-void Pyramid::render(const Shader& shader, const glm::mat4& view, const glm::mat4& projection,  glm::mat4& model) {
+void Pyramid::render(const Shader& shader, const glm::mat4& view, const glm::mat4& projection,  glm::mat4& model, int& animation) {
     shader.use();
     shader.setMat4("view", view);
     shader.setMat4("projection", projection);
@@ -38,11 +45,12 @@ void Pyramid::render(const Shader& shader, const glm::mat4& view, const glm::mat
         // END OF TRANSITION
         if (transitionProgress >= 1.0f) {
             transitionProgress = 0.0f;
+            move_pyramid();
             translation_animation = glm::vec3(0.0f, 0.0f, 0.0f);
             translation_direction = glm::vec3(0.0f, 0.0f, 0.0f);
             isTransitioning = 0;
-            // function move pyramid
             direction == 0;
+            animation = 0;
         }
     }
 
@@ -58,14 +66,26 @@ void Pyramid::move(float pos_x, float pos_y, float pos_z) {
     }
 }
 
-void Pyramid::move_direction(int direction_given) {
+void Pyramid::move_direction(int direction_given, int& animation) {
     isTransitioning = 1;
+    animation = 1;
     int direction = direction_given;
-    if (direction == 1) translation_direction = glm::vec3( 0.0f,  0.0f, -2.0f);
-    if (direction == 2) translation_direction = glm::vec3( 2.0f,  0.0f,  0.0f);
-    if (direction == 3) translation_direction = glm::vec3( 0.0f,  0.0f,  2.0f);
-    if (direction == 4) translation_direction = glm::vec3( -2.0f, 0.0f,  0.0f);
+    if (direction == 3) translation_direction = glm::vec3( 0.0f,  0.0f, -2.0f);
+    if (direction == 4) translation_direction = glm::vec3( 2.0f,  0.0f,  0.0f);
+    if (direction == 1) translation_direction = glm::vec3( 0.0f,  0.0f,  2.0f);
+    if (direction == 2) translation_direction = glm::vec3( -2.0f, 0.0f,  0.0f);
 }
+
+void Pyramid::move_pyramid() {
+    for (int i = 0; i < 144; i += 8) {
+        glm::vec3 position(vertices[i], vertices[i + 1], vertices[i + 2]);
+        glm::vec3 translatedPosition = position + translation_direction;
+        vertices[i] = translatedPosition.x;
+        vertices[i + 1] = translatedPosition.y;
+        vertices[i + 2] = translatedPosition.z;
+    }
+}
+
 
 Pyramid::~Pyramid() {
     glDeleteVertexArrays(1, &VAO);

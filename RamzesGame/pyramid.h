@@ -6,6 +6,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <map>
+#include <cmath>
+#include <string>
+#include <vector>
+#include <random>
+#include <iostream>
+
 class Pyramid {
 public:
     float vertices[144] = {
@@ -43,11 +50,12 @@ public:
     glm::vec3 translation_animation = glm::vec3(0.0f, 0.0f, 0.0f);
 
     Pyramid();
-    void render(const Shader& shader, const glm::mat4& view, const glm::mat4& projection,  glm::mat4& model);
+    void render(const Shader& shader, const glm::mat4& view, const glm::mat4& projection,  glm::mat4& model, int& animation);
     ~Pyramid();
 
     void move(float pos_x, float pos_y, float pos_z);
-    void move_direction(int direction_given);
+    void move_direction(int direction_given, int &animation);
+    void move_pyramid();
 
 private:
     unsigned int VAO, VBO;
