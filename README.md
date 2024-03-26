@@ -1,6 +1,6 @@
 # Ramzes-Game
 
-A simple C++ program using OpenGL to create a 3D representation of a Rubik's Cube.
+A simple C++ game using OpenGL to create a 3D representation of Ramzes II board game.
 
 ## Table of Contents
 - [Features](#features)
@@ -24,10 +24,10 @@ A simple C++ program using OpenGL to create a 3D representation of a Rubik's Cub
 - H - tooghle help menu
 
 ## Getting Started
-A simple C++ program using OpenGL to create a 3D representation of a Rubik's Cube.
+A simple C++ program...
 
 ### Prerequisites
-- C++ compiler that supports C++11 or later.
+- C++ compiler
 - OpenGL library installed.
 
 ### Building and Running
