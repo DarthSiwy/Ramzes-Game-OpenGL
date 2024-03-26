@@ -10,8 +10,13 @@
 void show_board(std::vector<std::vector<int>>& board) {
     system("cls");
     for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 8; j++) std::cout << board[i][j] << " \t";
-        std::cout << "\n";
+        for (int j = 0; j < 8; j++) {
+            int value = board[i][j];
+            if (value < 0) std::cout << "\x1B[31m"; 
+            else if (value > 50) std::cout << "\x1B[32m";            
+            std::cout << value << "\033[0m\t";
+        }
+        std::cout << "\n\n";
     }
 }
 

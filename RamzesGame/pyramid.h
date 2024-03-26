@@ -44,7 +44,7 @@ public:
     float step = 2.0f;
     int isTransitioning = 0;
     float transitionProgress = 0.0f;
-    float transition_speed = 2.0f;
+    float transition_speed = 10.0f;
     int direction = 0; 
     glm::vec3 translation_direction = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 translation_animation = glm::vec3(0.0f, 0.0f, 0.0f);
