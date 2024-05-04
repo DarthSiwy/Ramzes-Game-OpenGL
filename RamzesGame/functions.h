@@ -9,4 +9,3 @@
 
 void show_board(std::vector<std::vector<int>>& board);
 void make_board(std::vector<std::vector<int>>& board);
-

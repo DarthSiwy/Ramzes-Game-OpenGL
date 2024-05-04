@@ -14,6 +14,7 @@
 #include "border.h"
 #include "functions.h"
 #include "player.h"
+#include "keyboard.h"
 
 #include <map>
 #include <cmath>
@@ -29,40 +30,40 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
-int find_value(std::vector<std::vector<int>>& board, int direction, const Player& player) {
+int find_value(std::vector<std::vector<int>>& board, int direction, const Empty_Space& empty_space) {
     int result = 0;
-    if (direction == 1) result = board[player.posX-1][player.posY];
-    if (direction == 2) result = board[player.posX][player.posY+1];
-    if (direction == 3) result = board[player.posX+1][player.posY];
-    if (direction == 4) result = board[player.posX][player.posY-1];
+    if (direction == 1) result = board[empty_space.posX-1][empty_space.posY];
+    if (direction == 2) result = board[empty_space.posX][empty_space.posY+1];
+    if (direction == 3) result = board[empty_space.posX+1][empty_space.posY];
+    if (direction == 4) result = board[empty_space.posX][empty_space.posY-1];
     return result;
 }
 
-void swap_value(std::vector<std::vector<int>>& board, int direction, Player& player) {
+void swap_value(std::vector<std::vector<int>>& board, int direction, Empty_Space& empty_space) {
     int value = 0;
     if (direction == 1) {
-        value = board[player.posX - 1][player.posY];
-        board[player.posX - 1][player.posY] = 77;
-        board[player.posX][player.posY] = value;
-        player.posX += -1;
+        value = board[empty_space.posX - 1][empty_space.posY];
+        board[empty_space.posX - 1][empty_space.posY] = 77;
+        board[empty_space.posX][empty_space.posY] = value;
+        empty_space.posX += -1;
     }
     if (direction == 2) {
-        value = board[player.posX][player.posY + 1];
-        board[player.posX][player.posY + 1] = 77;
-        board[player.posX][player.posY] = value;
-        player.posY += 1;
+        value = board[empty_space.posX][empty_space.posY + 1];
+        board[empty_space.posX][empty_space.posY + 1] = 77;
+        board[empty_space.posX][empty_space.posY] = value;
+        empty_space.posY += 1;
     }
     if (direction == 3) {
-        value = board[player.posX + 1][player.posY];
-        board[player.posX + 1][player.posY] = 77;
-        board[player.posX][player.posY] = value;
-        player.posX += 1;
+        value = board[empty_space.posX + 1][empty_space.posY];
+        board[empty_space.posX + 1][empty_space.posY] = 77;
+        board[empty_space.posX][empty_space.posY] = value;
+        empty_space.posX += 1;
     }
     if (direction == 4) {
-        value = board[player.posX][player.posY - 1];
-        board[player.posX][player.posY - 1] = 77;
-        board[player.posX][player.posY] = value;
-        player.posY -= 1;
+        value = board[empty_space.posX][empty_space.posY - 1];
+        board[empty_space.posX][empty_space.posY - 1] = 77;
+        board[empty_space.posX][empty_space.posY] = value;
+        empty_space.posY -= 1;
     }
 }
 
@@ -107,7 +108,7 @@ int main() {
     Border border;
 
     Pyramid pyramids[47];
-    Player player(8,6);
+    Empty_Space empty_space_on_board(8,6);
 
     std::vector<std::vector<int>> board;
     make_board(board);
@@ -141,6 +142,8 @@ int main() {
         z += step;
         x = 0;
     }
+    for (int i = 0; i < 47; i++) pyramids[i].move(0, -1.0f, 0);
+
     // CAMERA POSITION
     camera.Position.x = 14.0f;
     camera.Position.y = 10.0f;
@@ -152,10 +155,10 @@ int main() {
     int move_direction = 0;
     int animation = 0;
 
-    int previousKeyState_RIGHT = GLFW_RELEASE;
-    int previousKeyState_UP = GLFW_RELEASE;
-    int previousKeyState_DOWN = GLFW_RELEASE;
-    int previousKeyState_LEFT = GLFW_RELEASE;
+    int previousKeyState[10], currentKeyState[10];
+    for (int i = 0; i < 10; i++) previousKeyState[i] = GLFW_RELEASE;
+
+
 
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -187,35 +190,31 @@ int main() {
         // RENDER 
         axis.render(shader_main, view, projection);
         border.render(shader_main, view, projection);
+
         for (int i = 0; i < 47; i++) pyramids[i].render(shader_main, view, projection, model, animation);   
 
         // KEYBOARD
-        int currentKeyState_RIGHT = glfwGetKey(window, GLFW_KEY_RIGHT);
-        int currentKeyState_UP = glfwGetKey(window, GLFW_KEY_UP);
-        int currentKeyState_DOWN = glfwGetKey(window, GLFW_KEY_DOWN);
-        int currentKeyState_LEFT = glfwGetKey(window, GLFW_KEY_LEFT);
+        updateKeyboardState(window, currentKeyState);
 
         if (animation == 0){
-            if (currentKeyState_UP == GLFW_PRESS && previousKeyState_UP == GLFW_RELEASE) move_direction = 10;
-            if (currentKeyState_RIGHT == GLFW_PRESS && previousKeyState_RIGHT == GLFW_RELEASE) move_direction = 20;
-            if (currentKeyState_DOWN == GLFW_PRESS && previousKeyState_DOWN == GLFW_RELEASE) move_direction = 30;
-            if (currentKeyState_LEFT == GLFW_PRESS && previousKeyState_LEFT == GLFW_RELEASE) move_direction = 40;
+            if (currentKeyState[1] == GLFW_PRESS && previousKeyState[1] == GLFW_RELEASE) move_direction = 10;
+            if (currentKeyState[2] == GLFW_PRESS && previousKeyState[2] == GLFW_RELEASE) move_direction = 30;
+            if (currentKeyState[3] == GLFW_PRESS && previousKeyState[3] == GLFW_RELEASE) move_direction = 20;
+            if (currentKeyState[4] == GLFW_PRESS && previousKeyState[4] == GLFW_RELEASE) move_direction = 40;
         }
 
         if (move_direction > 9) {
             move_direction /= 10;
-            if (find_value(board, move_direction, player) > -1) {
-                pyramids[find_value(board, move_direction, player)].move_direction(move_direction, animation);
-                swap_value(board, move_direction, player);
+            if (find_value(board, move_direction, empty_space_on_board) > -1) {
+                pyramids[find_value(board, move_direction, empty_space_on_board)].move_direction(move_direction, animation);
+                swap_value(board, move_direction, empty_space_on_board);
                 show_board(board);
             }
             move_direction = 0;
         }
 
-        previousKeyState_RIGHT = currentKeyState_RIGHT;
-        previousKeyState_LEFT = currentKeyState_LEFT;
-        previousKeyState_UP = currentKeyState_UP;
-        previousKeyState_DOWN = currentKeyState_DOWN;
+        for (int i = 0; i < 10; i++) previousKeyState[i] = currentKeyState[i];
+        
         
         // SWAP BUFFERS
         glfwSwapBuffers(window);

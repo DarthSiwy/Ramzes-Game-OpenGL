@@ -154,14 +154,17 @@
     <ClCompile Include="border.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="axis.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="pyramid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="border.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="functions.h" />
+    <ClInclude Include="keyboard.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="pyramid.h" />
     <ClInclude Include="shader_m.h" />

@@ -1,12 +1,7 @@
 
-
-
-class Player {
-    public:
-        int posX;
-        int posY;
-        Player(int x, int y) {
-            posX = x;
-            posY = y;
-        }
-    };
+class Empty_Space {
+public:
+    int posX;
+    int posY;
+    Empty_Space(int x, int y);
+};
