@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="border.cpp" />
+    <ClCompile Include="box.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="keyboard.cpp" />
@@ -162,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="border.h" />
+    <ClInclude Include="box.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="functions.h" />
     <ClInclude Include="keyboard.h" />

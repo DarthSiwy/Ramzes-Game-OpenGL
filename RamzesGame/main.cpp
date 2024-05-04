@@ -15,6 +15,7 @@
 #include "functions.h"
 #include "player.h"
 #include "keyboard.h"
+#include "box.h"
 
 #include <map>
 #include <cmath>
@@ -103,11 +104,13 @@ int main() {
     }
 
     Shader shader_main("shader_vertex", "shader_fragment");
+    Shader shader1("shader_vertex1", "shader_fragment1");
     
     Axis axis;
     Border border;
 
     Pyramid pyramids[47];
+    Box box;
     Empty_Space empty_space_on_board(8,6);
 
     std::vector<std::vector<int>> board;
@@ -142,7 +145,7 @@ int main() {
         z += step;
         x = 0;
     }
-    for (int i = 0; i < 47; i++) pyramids[i].move(0, -1.0f, 0);
+    //for (int i = 0; i < 47; i++) pyramids[i].move(0, -1.0f, 0);
 
     // CAMERA POSITION
     camera.Position.x = 14.0f;
@@ -189,8 +192,8 @@ int main() {
       
         // RENDER 
         axis.render(shader_main, view, projection);
-        border.render(shader_main, view, projection);
-
+        //border.render(shader_main, view, projection);
+        box.render(shader1, view, projection, model);
         for (int i = 0; i < 47; i++) pyramids[i].render(shader_main, view, projection, model, animation);   
 
         // KEYBOARD
