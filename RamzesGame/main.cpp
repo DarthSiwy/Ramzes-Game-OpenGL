@@ -83,7 +83,7 @@ int main() {
     std::vector<std::vector<int>> board;
     make_board(board);
     set_pyramids_default(pyramids);
-    set_pyramids_vector(pyramids,  1, 0, 1);
+    set_pyramids_vector(pyramids,  1, 0.01, 1);
 
     // TEXTURES
     unsigned int texture1;
