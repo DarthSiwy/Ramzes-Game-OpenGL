@@ -16,6 +16,7 @@
 #include "empty_space.h"
 #include "keyboard.h"
 #include "box.h"
+#include "floor.h"
 
 #include <map>
 #include <cmath>
@@ -74,6 +75,7 @@ int main() {
     Axis axis;
     Border border;
     Box box;
+    Floor floor;
     Pyramid pyramids[47];
     Empty_Space empty_space_on_board(8,6);
 
@@ -149,6 +151,7 @@ int main() {
         axis.render(shader_main, view, projection);
         border.render(shader_main, view, projection);
         box.render(shader1, view, projection, model);
+        floor.render(shader1, view, projection, model);
         for (int i = 0; i < 47; i++) pyramids[i].render(shader_main, view, projection, model, animation);   
 
         // UPDATE KEYBOARD

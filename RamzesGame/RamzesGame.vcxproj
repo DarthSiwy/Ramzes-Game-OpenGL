@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="border.cpp" />
     <ClCompile Include="box.cpp" />
+    <ClCompile Include="floor.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="keyboard.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="border.h" />
     <ClInclude Include="box.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="floor.h" />
     <ClInclude Include="functions.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="empty_space.h" />
@@ -175,7 +177,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shader_fragment" />
+    <None Include="shader_fragment1" />
     <None Include="shader_vertex" />
+    <None Include="shader_vertex1" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
