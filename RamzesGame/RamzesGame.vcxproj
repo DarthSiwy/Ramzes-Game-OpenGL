@@ -158,7 +158,7 @@
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="axis.cpp" />
-    <ClCompile Include="player.cpp" />
+    <ClCompile Include="empty_space.cpp" />
     <ClCompile Include="pyramid.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,7 +167,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="functions.h" />
     <ClInclude Include="keyboard.h" />
-    <ClInclude Include="player.h" />
+    <ClInclude Include="empty_space.h" />
     <ClInclude Include="pyramid.h" />
     <ClInclude Include="shader_m.h" />
     <ClInclude Include="stb_image.h" />

@@ -13,7 +13,7 @@
 #include "pyramid.h"
 #include "border.h"
 #include "functions.h"
-#include "player.h"
+#include "empty_space.h"
 #include "keyboard.h"
 #include "box.h"
 
@@ -26,47 +26,11 @@
 
 #include FT_FREETYPE_H
 
+// CAMERA AND MOVMENT
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
-
-int find_value(std::vector<std::vector<int>>& board, int direction, const Empty_Space& empty_space) {
-    int result = 0;
-    if (direction == 1) result = board[empty_space.posX-1][empty_space.posY];
-    if (direction == 2) result = board[empty_space.posX][empty_space.posY+1];
-    if (direction == 3) result = board[empty_space.posX+1][empty_space.posY];
-    if (direction == 4) result = board[empty_space.posX][empty_space.posY-1];
-    return result;
-}
-
-void swap_value(std::vector<std::vector<int>>& board, int direction, Empty_Space& empty_space) {
-    int value = 0;
-    if (direction == 1) {
-        value = board[empty_space.posX - 1][empty_space.posY];
-        board[empty_space.posX - 1][empty_space.posY] = 77;
-        board[empty_space.posX][empty_space.posY] = value;
-        empty_space.posX += -1;
-    }
-    if (direction == 2) {
-        value = board[empty_space.posX][empty_space.posY + 1];
-        board[empty_space.posX][empty_space.posY + 1] = 77;
-        board[empty_space.posX][empty_space.posY] = value;
-        empty_space.posY += 1;
-    }
-    if (direction == 3) {
-        value = board[empty_space.posX + 1][empty_space.posY];
-        board[empty_space.posX + 1][empty_space.posY] = 77;
-        board[empty_space.posX][empty_space.posY] = value;
-        empty_space.posX += 1;
-    }
-    if (direction == 4) {
-        value = board[empty_space.posX][empty_space.posY - 1];
-        board[empty_space.posX][empty_space.posY - 1] = 77;
-        board[empty_space.posX][empty_space.posY] = value;
-        empty_space.posY -= 1;
-    }
-}
 
 // settings
 const unsigned int SCR_WIDTH = 1920;
@@ -83,6 +47,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 int main() {
+    // GLFW 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -103,18 +68,20 @@ int main() {
         return -1;
     }
 
+    // CLASS OBJECTS
     Shader shader_main("shader_vertex", "shader_fragment");
     Shader shader1("shader_vertex1", "shader_fragment1");
-    
     Axis axis;
     Border border;
-
-    Pyramid pyramids[47];
     Box box;
+    Pyramid pyramids[47];
     Empty_Space empty_space_on_board(8,6);
 
+    // STARTING FUNCTIONS
     std::vector<std::vector<int>> board;
     make_board(board);
+    set_pyramids_default(pyramids);
+    set_pyramids_vector(pyramids,  1, 0, 1);
 
     // TEXTURES
     unsigned int texture1;
@@ -133,20 +100,7 @@ int main() {
     }
     else std::cout << "Failed to load texture" << std::endl;
     stbi_image_free(data);  
-
-    int x = 0, z = 0, step = 2, index = 0;    
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 6; j++) {
-            pyramids[index].move(x, 0, z);
-            x += step;
-            index++;
-            if (index == 47) j = 6;
-        }
-        z += step;
-        x = 0;
-    }
-    //for (int i = 0; i < 47; i++) pyramids[i].move(0, -1.0f, 0);
-
+    
     // CAMERA POSITION
     camera.Position.x = 14.0f;
     camera.Position.y = 10.0f;
@@ -155,12 +109,13 @@ int main() {
     camera.Yaw += -40.0f;
     camera.updateCameraVectors();
 
+    // GAME VARIABLES
     int move_direction = 0;
     int animation = 0;
 
+    // keyboard
     int previousKeyState[10], currentKeyState[10];
     for (int i = 0; i < 10; i++) previousKeyState[i] = GLFW_RELEASE;
-
 
 
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -180,7 +135,7 @@ int main() {
         lastFrame = currentFrame;
         //camera.DisplayPosition();
 
-        // MATRIX
+        // MATRIX CREATE
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -192,12 +147,13 @@ int main() {
       
         // RENDER 
         axis.render(shader_main, view, projection);
-        //border.render(shader_main, view, projection);
+        border.render(shader_main, view, projection);
         box.render(shader1, view, projection, model);
         for (int i = 0; i < 47; i++) pyramids[i].render(shader_main, view, projection, model, animation);   
 
-        // KEYBOARD
+        // UPDATE KEYBOARD
         updateKeyboardState(window, currentKeyState);
+
 
         if (animation == 0){
             if (currentKeyState[1] == GLFW_PRESS && previousKeyState[1] == GLFW_RELEASE) move_direction = 10;
@@ -208,17 +164,15 @@ int main() {
 
         if (move_direction > 9) {
             move_direction /= 10;
-            if (find_value(board, move_direction, empty_space_on_board) > -1) {
-                pyramids[find_value(board, move_direction, empty_space_on_board)].move_direction(move_direction, animation);
-                swap_value(board, move_direction, empty_space_on_board);
+            if (empty_space_on_board.find_value(board, move_direction, empty_space_on_board) > -1) {
+                pyramids[empty_space_on_board.find_value(board, move_direction, empty_space_on_board)].move_direction(move_direction, animation);
+                empty_space_on_board.swap_value(board, move_direction, empty_space_on_board);
                 show_board(board);
             }
             move_direction = 0;
         }
 
-        for (int i = 0; i < 10; i++) previousKeyState[i] = currentKeyState[i];
-        
-        
+        for (int i = 0; i < 10; i++) previousKeyState[i] = currentKeyState[i];       
         // SWAP BUFFERS
         glfwSwapBuffers(window);
         glfwPollEvents();

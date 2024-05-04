@@ -34,7 +34,7 @@ void Box::render(const Shader& shader, const glm::mat4& view, const glm::mat4& p
     glBindVertexArray(VAO);
 
     shader.setMat4("model", model);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawArrays(GL_TRIANGLES, 0, 10);
 }
 
 

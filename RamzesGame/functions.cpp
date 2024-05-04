@@ -1,4 +1,5 @@
 #include "functions.h"
+#include "pyramid.h"
 
 #include <map>
 #include <cmath>
@@ -6,6 +7,7 @@
 #include <vector>
 #include <random>
 #include <iostream>
+
 
 void show_board(std::vector<std::vector<int>>& board) {
     system("cls");
@@ -34,5 +36,27 @@ void make_board(std::vector<std::vector<int>>& board) {
         {-1, -1, -1, -1, -1, -1, -1, -1}
     };
 }
+
+void set_pyramids_default(Pyramid pyramids[]) {
+    int x = 0, z = 0, step = 2; 
+    int index = 0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 6; j++) {
+            pyramids[index].move(x, 0, z);
+            x += step;
+            index++;
+            if (index == 47) j = 6;
+        }
+        z += step;
+        x = 0;
+    }
+}
+
+void set_pyramids_vector(Pyramid pyramids[], float x, float y, float z) {
+    for (int i = 0; i < 47; i++) {
+        pyramids[i].move(x, y, z);
+    }
+}
+
 
 
