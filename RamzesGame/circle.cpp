@@ -8,7 +8,9 @@
 #include <random>
 #include <iostream>
 
-Circle::Circle(float radius, int numSegments) {
+Circle::Circle() {
+    float radius=0.9f; 
+    int numSegments=100;
     vertices.push_back(0.0f);
     vertices.push_back(0.0f);
     vertices.push_back(0.0f);
@@ -22,7 +24,6 @@ Circle::Circle(float radius, int numSegments) {
         vertices.push_back(z);
     }
 
-    // Create VAO and VBO
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
@@ -31,7 +32,6 @@ Circle::Circle(float radius, int numSegments) {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-    // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 

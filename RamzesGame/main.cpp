@@ -77,19 +77,17 @@ int main() {
     Border border;
     Box box;
     Floor floor;
-    Circle circle(0.5f, 360);
-    
-
     Pyramid pyramids[47];
+    Circle circles[48];
     Empty_Space empty_space_on_board(8,6);
 
     // STARTING FUNCTIONS
     std::vector<std::vector<int>> board;
     make_board(board);
     set_pyramids_default(pyramids);
-    set_pyramids_vector(pyramids,  1, 4.01, 1);
-
-    circle.move(1, 0.01, 1);
+    set_pyramids_vector(pyramids,  1, 0.02, 1);
+    set_circles_default(circles);
+    set_circles_vector(circles, 1, 0.01, 1);
 
     // TEXTURES
     unsigned int texture1;
@@ -159,13 +157,14 @@ int main() {
         border.render(shader_main, view, projection);
         box.render(shader1, view, projection, model);
         floor.render(shader1, view, projection, model);
-        for (int i = 0; i < 47; i++) pyramids[i].render(shader_main, view, projection, model, animation);   
-        circle.render(shader_main, view, projection);
+        for (int i = 0; i < 48; i++)    circles[i].render(shader_main, view, projection);
+        for (int i = 0; i < 47; i++)    pyramids[i].render(shader_main, view, projection, model, animation);   
+        
 
         // UPDATE KEYBOARD
         updateKeyboardState(window, currentKeyState);
 
-
+        // MOVEMENTS
         if (animation == 0){
             if (currentKeyState[1] == GLFW_PRESS && previousKeyState[1] == GLFW_RELEASE) move_direction = 10;
             if (currentKeyState[2] == GLFW_PRESS && previousKeyState[2] == GLFW_RELEASE) move_direction = 30;

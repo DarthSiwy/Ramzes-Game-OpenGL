@@ -15,7 +15,7 @@
 
 class Circle {
 public:
-    Circle(float radius, int numSegments);
+    Circle();
     void render(const Shader& shader, const glm::mat4& view, const glm::mat4& projection);
     ~Circle();
     void move(float posX, float posY, float posZ);

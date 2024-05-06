@@ -1,5 +1,6 @@
 #include "functions.h"
 #include "pyramid.h"
+#include "circle.h"
 
 #include <map>
 #include <cmath>
@@ -49,6 +50,26 @@ void set_pyramids_default(Pyramid pyramids[]) {
         }
         z += step;
         x = 0;
+    }
+}
+
+void set_circles_default(Circle circles[]) {
+    int x = 0, z = 0, step = 2;
+    int index = 0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 6; j++) {
+            circles[index].move(x, 0, z);
+            x += step;
+            index++;
+        }
+        z += step;
+        x = 0;
+    }
+}
+
+void set_circles_vector(Circle circles[], float x, float y, float z) {
+    for (int i = 0; i < 48; i++) {
+        circles[i].move(x, y, z);
     }
 }
 
