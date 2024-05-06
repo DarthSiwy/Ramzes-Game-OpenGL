@@ -48,6 +48,9 @@
     <ClCompile Include="floor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="circle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -81,6 +84,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="floor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="circle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
