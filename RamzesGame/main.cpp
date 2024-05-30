@@ -72,7 +72,8 @@ int main() {
 
     // CLASS OBJECTS
     Shader shader_main("shader_vertex", "shader_fragment");
-    Shader shader1("shader_vertex1", "shader_fragment1");
+    Shader shader_1("shader_vertex_1", "shader_fragment_1");
+    Shader shader_2("shader_vertex_2", "shader_fragment_2");
     Axis axis;
     Border border;
     Box box;
@@ -85,9 +86,10 @@ int main() {
     std::vector<std::vector<int>> board;
     make_board(board);
     set_pyramids_default(pyramids);
-    set_pyramids_vector(pyramids,  1, 0.02, 1);
+    set_pyramids_vector(pyramids,  1, 8.02, 1);
     set_circles_default(circles);
     set_circles_vector(circles, 1, 0.01, 1);
+    circles[47].change_color(0.0f, 0.0f, 1.0f);
 
     // TEXTURES
     unsigned int texture1;
@@ -155,8 +157,8 @@ int main() {
         
         axis.render(shader_main, view, projection);
         border.render(shader_main, view, projection);
-        box.render(shader1, view, projection, model);
-        floor.render(shader1, view, projection, model);
+        box.render(shader_1, view, projection, model);
+        floor.render(shader_1, view, projection, model);
         for (int i = 0; i < 48; i++)    circles[i].render(shader_main, view, projection);
         for (int i = 0; i < 47; i++)    pyramids[i].render(shader_main, view, projection, model, animation);   
         

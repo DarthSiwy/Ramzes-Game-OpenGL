@@ -19,6 +19,7 @@ public:
     void render(const Shader& shader, const glm::mat4& view, const glm::mat4& projection);
     ~Circle();
     void move(float posX, float posY, float posZ);
+    void change_color(float r, float g, float b);
 
 private:
     unsigned int VAO, VBO;

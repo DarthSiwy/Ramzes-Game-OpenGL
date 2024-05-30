@@ -179,9 +179,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shader_fragment" />
-    <None Include="shader_fragment1" />
+    <None Include="shader_fragment_1" />
+    <None Include="shader_fragment_2" />
     <None Include="shader_vertex" />
-    <None Include="shader_vertex1" />
+    <None Include="shader_vertex_1" />
+    <None Include="shader_vertex_2" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

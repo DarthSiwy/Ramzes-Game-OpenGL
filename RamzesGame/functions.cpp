@@ -43,7 +43,7 @@ void set_pyramids_default(Pyramid pyramids[]) {
     int index = 0;
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 6; j++) {
-            pyramids[index].move(x, 0, z);
+            pyramids[index].move(x, 0.0f, z);
             x += step;
             index++;
             if (index == 47) j = 6;
