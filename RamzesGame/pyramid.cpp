@@ -23,6 +23,9 @@ Pyramid::Pyramid() {
 }
 
 void Pyramid::render(const Shader& shader, const glm::mat4& view, const glm::mat4& projection,  glm::mat4& model, int& animation) {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     shader.use();
     shader.setMat4("view", view);
     shader.setMat4("projection", projection);
@@ -54,8 +57,13 @@ void Pyramid::render(const Shader& shader, const glm::mat4& view, const glm::mat
         }
     }
 
+    glm::vec4 color(1.0f, 1.0f, 1.0f, 0.5f); // White color with 50% transparency
+    shader.setVec4("color", color);
+
     shader.setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    glDisable(GL_BLEND);
 }
 
 void Pyramid::move(float pos_x, float pos_y, float pos_z) {

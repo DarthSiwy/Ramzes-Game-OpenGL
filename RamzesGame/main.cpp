@@ -83,13 +83,14 @@ int main() {
     Empty_Space empty_space_on_board(8,6);
 
     // STARTING FUNCTIONS
-    std::vector<std::vector<int>> board;
-    make_board(board);
+    std::vector<std::vector<int>> board_pyramids;
+    make_board_pyramids(board_pyramids);
     set_pyramids_default(pyramids);
-    set_pyramids_vector(pyramids,  1, 8.02, 1);
+    set_pyramids_vector(pyramids,  1, 0.02, 1);
     set_circles_default(circles);
     set_circles_vector(circles, 1, 0.01, 1);
     circles[47].change_color(0.0f, 0.0f, 1.0f);
+    circles[40].change_color(1.0f, 0.0f, 1.0f);
 
     // TEXTURES
     unsigned int texture1;
@@ -124,6 +125,8 @@ int main() {
     // keyboard
     int previousKeyState[10], currentKeyState[10];
     for (int i = 0; i < 10; i++) previousKeyState[i] = GLFW_RELEASE;
+
+    show_board_pyramids(board_pyramids);
 
 
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -160,7 +163,7 @@ int main() {
         box.render(shader_1, view, projection, model);
         floor.render(shader_1, view, projection, model);
         for (int i = 0; i < 48; i++)    circles[i].render(shader_main, view, projection);
-        for (int i = 0; i < 47; i++)    pyramids[i].render(shader_main, view, projection, model, animation);   
+        for (int i = 0; i < 47; i++)    pyramids[i].render(shader_2, view, projection, model, animation);   
         
 
         // UPDATE KEYBOARD
@@ -176,10 +179,10 @@ int main() {
 
         if (move_direction > 9) {
             move_direction /= 10;
-            if (empty_space_on_board.find_value(board, move_direction, empty_space_on_board) > -1) {
-                pyramids[empty_space_on_board.find_value(board, move_direction, empty_space_on_board)].move_direction(move_direction, animation);
-                empty_space_on_board.swap_value(board, move_direction, empty_space_on_board);
-                show_board(board);
+            if (empty_space_on_board.find_value(board_pyramids, move_direction, empty_space_on_board) > -1) {
+                pyramids[empty_space_on_board.find_value(board_pyramids, move_direction, empty_space_on_board)].move_direction(move_direction, animation);
+                empty_space_on_board.swap_value(board_pyramids, move_direction, empty_space_on_board);
+                show_board_pyramids(board_pyramids);
             }
             move_direction = 0;
         }

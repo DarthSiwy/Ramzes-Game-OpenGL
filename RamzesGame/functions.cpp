@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-void show_board(std::vector<std::vector<int>>& board) {
+void show_board_pyramids(std::vector<std::vector<int>>& board) {
     system("cls");
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 8; j++) {
@@ -23,7 +23,7 @@ void show_board(std::vector<std::vector<int>>& board) {
     }
 }
 
-void make_board(std::vector<std::vector<int>>& board) {
+void make_board_pyramids(std::vector<std::vector<int>>& board) {
     board = {
         {-1, -1, -1, -1, -1, -1, -1, -1},
         {-1,  0,  1,  2,  3,  4,  5, -1},
