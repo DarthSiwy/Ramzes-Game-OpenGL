@@ -21,6 +21,7 @@ void show_board_pyramids(std::vector<std::vector<int>>& board) {
         }
         std::cout << "\n\n";
     }
+    std::cout << "current position: \n\n";
 }
 
 void make_board_pyramids(std::vector<std::vector<int>>& board) {
@@ -43,6 +44,8 @@ void set_pyramids_default(Pyramid pyramids[]) {
     int index = 0;
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 6; j++) {
+            pyramids[index].posX = i+1;
+            pyramids[index].posY = j+1;
             pyramids[index].move(x, 0.0f, z);
             x += step;
             index++;
@@ -53,23 +56,23 @@ void set_pyramids_default(Pyramid pyramids[]) {
     }
 }
 
-void set_circles_default(Circle circles[]) {
-    int x = 0, z = 0, step = 2;
-    int index = 0;
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 6; j++) {
-            circles[index].move(x, 0, z);
-            x += step;
-            index++;
-        }
-        z += step;
-        x = 0;
+void set_circles_default(Circle circles[8][6]){
+int x = 0, z = 0, step = 2;
+for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 6; j++) {
+        circles[i][j].move(x, 0, z);
+        x += step;
     }
+    z += step;
+    x = 0;
+}
 }
 
-void set_circles_vector(Circle circles[], float x, float y, float z) {
-    for (int i = 0; i < 48; i++) {
-        circles[i].move(x, y, z);
+void set_circles_vector(Circle circles[8][6], float x, float y, float z) {
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 6; j++) {
+            circles[i][j].move(x, y, z);
+        }
     }
 }
 

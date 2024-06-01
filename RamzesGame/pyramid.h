@@ -48,6 +48,8 @@ public:
     int direction = 0; 
     glm::vec3 translation_direction = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 translation_animation = glm::vec3(0.0f, 0.0f, 0.0f);
+    int posX;
+    int posY;
 
     Pyramid();
     void render(const Shader& shader, const glm::mat4& view, const glm::mat4& projection,  glm::mat4& model, int& animation);
