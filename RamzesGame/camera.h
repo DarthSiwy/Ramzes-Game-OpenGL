@@ -114,6 +114,7 @@ public:
         if (Zoom > 45.0f)
             Zoom = 45.0f;
     }
+    /*
     void DisplayPosition() const {
         std::cout << std::fixed << std::setprecision(2)
             << Position.x << "\t"
@@ -126,6 +127,7 @@ public:
             //<< Pitch << "\t"
             << std::endl;
     }
+    */
 
     //private:
         // calculates the front vector from the Camera's (updated) Euler Angles

@@ -18,6 +18,9 @@
 #include "box.h"
 #include "floor.h"
 #include "circle.h"
+#include "camera_movement.h"
+#include "globals.h"
+#include "text_render.h"
 
 #include <map>
 #include <cmath>
@@ -28,14 +31,20 @@
 
 #include FT_FREETYPE_H
 
-// CAMERA AND MOVMENT
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
 void RenderText(Shader& shader, std::string text, float x, float y, float scale, glm::vec3 color);
 
-// TEXT 
+// settings
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
+
+// Define the global variables
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+float deltaTime = 0.0f;
+float lastX = SCR_WIDTH / 2.0f;
+float lastY = SCR_HEIGHT / 2.0f;
+bool firstMouse = true;
+float lastFrame = 0.0f;
+
 struct Character {
     unsigned int TextureID; // ID handle of the glyph texture
     glm::ivec2   Size;      // Size of glyph
@@ -46,19 +55,7 @@ struct Character {
 std::map<GLchar, Character> Characters;
 unsigned int text_VAO, text_VBO;
 
-// settings
-const unsigned int SCR_WIDTH = 1920;
-const unsigned int SCR_HEIGHT = 1080;
 
-// camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
-bool firstMouse = true;
-
-// timing
-float deltaTime = 0.0f;	
-float lastFrame = 0.0f;
 
 int main() {
     // GLFW 
@@ -160,7 +157,7 @@ int main() {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    glBindVertexArray(0);  
 
     // CREATE OBJECTS
     Axis axis;
@@ -177,16 +174,8 @@ int main() {
     set_pyramids_vector(pyramids,  1, -1.02, 1);
     set_circles_default(circles);
     set_circles_vector(circles, 1, 0.01, 1);
-    circles[3][2].change_color(1.0f, 0.0f, 0.0f);
-    circles[1][3].change_color(0.0f, 1.0f, 0.0f);
-    circles[0][5].change_color(0.0f, 0.0f, 1.0f);
-    circles[7][2].change_color(1.0f, 0.5f, 0.0f);
-    circles[5][5].change_color(0.5f, 0.0f, 0.5f);
-    circles[3][2].value = 1;
-    circles[1][3].value = 2;
-    circles[0][5].value = 3;
-    circles[7][2].value = 4;
-    circles[5][5].value = 5;
+    set_board_circles(circles);
+    
 
     // TEXTURES
     unsigned int texture1;
@@ -263,6 +252,7 @@ int main() {
         // TEXT PRINTING
         RenderText(textShader, "text1: " + std::to_string(22), 25.0f, 1000.0f, 0.5f, glm::vec3(0.5, 0.8f, 0.2f));
 
+
         // UPDATE KEYBOARD
         updateKeyboardState(window, currentKeyState);
 
@@ -295,49 +285,7 @@ int main() {
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// CAMERA MOVEMENT
-void processInput(GLFWwindow* window) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        camera.ProcessKeyboard(UP, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        camera.ProcessKeyboard(DOWN, deltaTime);
-}
 
-// FRAME BUFFER
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
-
-// MOUSE MOVEMENT
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
-    if (firstMouse) {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;
-    lastX = xpos;
-    lastY = ypos;
-    camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
-// SCROOL MOUSE ZOOM
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    camera.ProcessMouseScroll(static_cast<float>(yoffset));
-}
 
 // RENDER TEXT
 void RenderText(Shader& shader, std::string text, float x, float y, float scale, glm::vec3 color) {
