@@ -20,6 +20,7 @@ public:
     ~Circle();
     void move(float posX, float posY, float posZ);
     void change_color(float r, float g, float b);
+    int value = 0;
 
 private:
     unsigned int VAO, VBO;

@@ -23,7 +23,6 @@ int Empty_Space::can_go(int direction, const Empty_Space& empty_space) {
     return result;
 }
 
-
 int Empty_Space::find_pyramid(int direction, const Empty_Space& empty_space, Pyramid pyramids[]) {
     int searched_x = empty_space.posX;
     int searched_y = empty_space.posY;

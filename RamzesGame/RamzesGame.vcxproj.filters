@@ -109,5 +109,11 @@
     <None Include="shader_fragment_2">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="fragment_shader_text">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="vertex_shader_text">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

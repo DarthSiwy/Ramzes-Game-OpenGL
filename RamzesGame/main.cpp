@@ -33,6 +33,18 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
+void RenderText(Shader& shader, std::string text, float x, float y, float scale, glm::vec3 color);
+
+// TEXT 
+struct Character {
+    unsigned int TextureID; // ID handle of the glyph texture
+    glm::ivec2   Size;      // Size of glyph
+    glm::ivec2   Bearing;   // Offset from baseline to left/top of glyph
+    unsigned int Advance;   // Horizontal offset to advance to next glyph
+};
+// LETTERS
+std::map<GLchar, Character> Characters;
+unsigned int text_VAO, text_VBO;
 
 // settings
 const unsigned int SCR_WIDTH = 1920;
@@ -74,6 +86,83 @@ int main() {
     Shader shader_main("shader_vertex", "shader_fragment");
     Shader shader_1("shader_vertex_1", "shader_fragment_1");
     Shader shader_2("shader_vertex_2", "shader_fragment_2");
+    Shader textShader("vertex_shader_text", "fragment_shader_text");
+
+
+    // TEXT
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(SCR_WIDTH), 0.0f, static_cast<float>(SCR_HEIGHT));
+    textShader.use();
+    glUniformMatrix4fv(glGetUniformLocation(textShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    FT_Library ft;
+    if (FT_Init_FreeType(&ft)) {
+        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+        return -1;
+    }
+    std::string font_name = ("resources/fonts/font_1.ttf");
+    if (font_name.empty()) {
+        std::cout << "ERROR::FREETYPE: Failed to load font_name" << std::endl;
+        return -1;
+    }
+    FT_Face face;
+    if (FT_New_Face(ft, font_name.c_str(), 0, &face)) {
+        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+        return -1;
+    }
+    else {
+        // set size to load glyphs as
+        FT_Set_Pixel_Sizes(face, 0, 48);
+        // disable byte-alignment restriction
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        // load first 128 characters of ASCII set
+        for (unsigned char c = 0; c < 128; c++) {
+            // Load character glyph 
+            if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+                std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+                continue;
+            }
+            // generate texture
+            unsigned int texture;
+            glGenTextures(1, &texture);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                GL_RED,
+                face->glyph->bitmap.width,
+                face->glyph->bitmap.rows,
+                0,
+                GL_RED,
+                GL_UNSIGNED_BYTE,
+                face->glyph->bitmap.buffer
+            );
+            // set texture options
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            Character character = {
+                texture,
+                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                static_cast<unsigned int>(face->glyph->advance.x)
+            };
+            Characters.insert(std::pair<char, Character>(c, character));
+        }
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
+    glGenVertexArrays(1, &text_VAO);
+    glGenBuffers(1, &text_VBO);
+    glBindVertexArray(text_VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, text_VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    // CREATE OBJECTS
     Axis axis;
     Border border;
     Box box;
@@ -84,15 +173,20 @@ int main() {
 
     // STARTING FUNCTIONS
     std::vector<std::vector<int>> board_pyramids;
-    make_board_pyramids(board_pyramids);
     set_pyramids_default(pyramids);
     set_pyramids_vector(pyramids,  1, -1.02, 1);
     set_circles_default(circles);
     set_circles_vector(circles, 1, 0.01, 1);
-
-
-    circles[4][2].change_color(0.0f, 0.0f, 1.0f);
-  
+    circles[3][2].change_color(1.0f, 0.0f, 0.0f);
+    circles[1][3].change_color(0.0f, 1.0f, 0.0f);
+    circles[0][5].change_color(0.0f, 0.0f, 1.0f);
+    circles[7][2].change_color(1.0f, 0.5f, 0.0f);
+    circles[5][5].change_color(0.5f, 0.0f, 0.5f);
+    circles[3][2].value = 1;
+    circles[1][3].value = 2;
+    circles[0][5].value = 3;
+    circles[7][2].value = 4;
+    circles[5][5].value = 5;
 
     // TEXTURES
     unsigned int texture1;
@@ -129,8 +223,6 @@ int main() {
     int previousKeyState[10], currentKeyState[10];
     for (int i = 0; i < 10; i++) previousKeyState[i] = GLFW_RELEASE;
 
-    //show_board_pyramids(board_pyramids);
-
 
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -147,7 +239,6 @@ int main() {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        //camera.DisplayPosition();
 
         // MATRIX CREATE
         glm::mat4 model = glm::mat4(1.0f);
@@ -168,8 +259,9 @@ int main() {
             for (int j = 0; j < 6; j++) circles[i][j].render(shader_main, view, projection);
         }
         for (int i = 0; i < 47; i++)    pyramids[i].render(shader_2, view, projection, model, animation);   
-        
-        std::cout << empty_space_on_board.posX << " " << empty_space_on_board.posY << std::endl;
+
+        // TEXT PRINTING
+        RenderText(textShader, "text1: " + std::to_string(22), 25.0f, 1000.0f, 0.5f, glm::vec3(0.5, 0.8f, 0.2f));
 
         // UPDATE KEYBOARD
         updateKeyboardState(window, currentKeyState);
@@ -245,4 +337,45 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
 // SCROOL MOUSE ZOOM
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
+}
+
+// RENDER TEXT
+void RenderText(Shader& shader, std::string text, float x, float y, float scale, glm::vec3 color) {
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    shader.use();
+    glUniform3f(glGetUniformLocation(shader.ID, "textColor"), color.x, color.y, color.z);
+    glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(text_VAO);
+    // iterate through all characters
+    std::string::const_iterator c;
+    for (c = text.begin(); c != text.end(); c++) {
+        Character ch = Characters[*c];
+        float xpos = x + ch.Bearing.x * scale;
+        float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+        float w = ch.Size.x * scale;
+        float h = ch.Size.y * scale;
+        // update VBO for each character
+        float vertices[6][4] = {
+            { xpos,     ypos + h,   0.0f, 0.0f },
+            { xpos,     ypos,       0.0f, 1.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+            { xpos,     ypos + h,   0.0f, 0.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+            { xpos + w, ypos + h,   1.0f, 0.0f }
+        };
+        // render glyph texture over quad
+        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+        // update content of VBO memory
+        glBindBuffer(GL_ARRAY_BUFFER, text_VBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // render quad
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+        x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+    }
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
