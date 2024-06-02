@@ -8,8 +8,7 @@
 #include <random>
 #include <iostream>
 
-Circle::Circle() {
-    float radius = 0.9f;
+Circle::Circle(float radius) : radius(radius) {
     int numSegments = 100;
     vertices.push_back(0.0f); // x
     vertices.push_back(0.0f); // y

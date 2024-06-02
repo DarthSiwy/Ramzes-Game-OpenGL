@@ -8,6 +8,10 @@
 #include <random>
 #include <iostream>
 
+Floor::Floor(int x, int y, int z, int w): x1(x), z1(y), x2(z), z2(w) {
+    // constructor implementation
+}
+
 Floor::Floor() {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);

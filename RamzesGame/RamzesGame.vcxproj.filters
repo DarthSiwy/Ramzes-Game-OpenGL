@@ -54,7 +54,7 @@
     <ClCompile Include="camera_movement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="text_render.cpp">
+    <ClCompile Include="player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,7 +101,7 @@
     <ClInclude Include="globals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="text_render.h">
+    <ClInclude Include="player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

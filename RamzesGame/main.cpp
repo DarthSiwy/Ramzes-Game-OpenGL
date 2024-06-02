@@ -20,7 +20,7 @@
 #include "circle.h"
 #include "camera_movement.h"
 #include "globals.h"
-#include "text_render.h"
+#include "player.h"
 
 #include <map>
 #include <cmath>
@@ -163,10 +163,12 @@ int main() {
     Axis axis;
     Border border;
     Box box;
-    Floor floor;
+    Floor floor(0,0,12,16);
     Pyramid pyramids[47];
     Circle circles[8][6];
+    Circle sand(50.0f);
     Empty_Space empty_space_on_board(8,6);
+    Player players[2];
 
     // STARTING FUNCTIONS
     std::vector<std::vector<int>> board_pyramids;
@@ -175,6 +177,8 @@ int main() {
     set_circles_default(circles);
     set_circles_vector(circles, 1, 0.01, 1);
     set_board_circles(circles);
+    sand.move(6, -10, 8);
+    sand.change_color(0.85f, 0.65f, 0.13f);
     
     // TEXTURES
     unsigned int texture1;
@@ -220,7 +224,7 @@ int main() {
         shader_main.use();
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.529f, 0.808f, 0.922f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // TIME 
@@ -243,13 +247,15 @@ int main() {
         border.render(shader_main, view, projection);
         box.render(shader_1, view, projection, model);
         floor.render(shader_1, view, projection, model);
+        sand.render(shader_main, view, projection);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 6; j++) circles[i][j].render(shader_main, view, projection);
         }
         for (int i = 0; i < 47; i++)    pyramids[i].render(shader_2, view, projection, model, animation);   
 
         // TEXT PRINTING
-        RenderText(textShader, "text1: " + std::to_string(22), 25.0f, 1000.0f, 0.5f, glm::vec3(0.5, 0.8f, 0.2f));
+        RenderText(textShader, "Player 1: " + std::to_string(players[0].points), 25.0f, 1000.0f, 0.5f, glm::vec3(0.9, 0.0f, 0.0f));
+        RenderText(textShader, "Player 2: " + std::to_string(players[1].points), 25.0f, 970.0f, 0.5f, glm::vec3(0.0, 1.0f, 0.0f));
 
 
         // UPDATE KEYBOARD

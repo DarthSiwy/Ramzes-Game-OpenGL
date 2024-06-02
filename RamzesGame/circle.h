@@ -15,12 +15,14 @@
 
 class Circle {
 public:
-    Circle();
+    Circle(float radius = 0.9f);
     void render(const Shader& shader, const glm::mat4& view, const glm::mat4& projection);
     ~Circle();
     void move(float posX, float posY, float posZ);
     void change_color(float r, float g, float b);
     int value = 0;
+    float radius=0.9f;
+    
 
 private:
     unsigned int VAO, VBO;
