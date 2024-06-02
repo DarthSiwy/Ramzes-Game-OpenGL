@@ -45,6 +45,7 @@ float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 float lastFrame = 0.0f;
 
+// TEXT
 struct Character {
     unsigned int TextureID; // ID handle of the glyph texture
     glm::ivec2   Size;      // Size of glyph
@@ -54,7 +55,6 @@ struct Character {
 // LETTERS
 std::map<GLchar, Character> Characters;
 unsigned int text_VAO, text_VBO;
-
 
 
 int main() {
@@ -83,7 +83,7 @@ int main() {
     Shader shader_main("shader_vertex", "shader_fragment");
     Shader shader_1("shader_vertex_1", "shader_fragment_1");
     Shader shader_2("shader_vertex_2", "shader_fragment_2");
-    Shader textShader("vertex_shader_text", "fragment_shader_text");
+    Shader textShader("shader_vertex_text", "shader_fragment_text");
 
 
     // TEXT
@@ -176,7 +176,6 @@ int main() {
     set_circles_vector(circles, 1, 0.01, 1);
     set_board_circles(circles);
     
-
     // TEXTURES
     unsigned int texture1;
     unsigned char* data;
@@ -284,8 +283,6 @@ int main() {
 }
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
 
 // RENDER TEXT
 void RenderText(Shader& shader, std::string text, float x, float y, float scale, glm::vec3 color) {

@@ -189,8 +189,8 @@
     <None Include="shader_vertex" />
     <None Include="shader_vertex_1" />
     <None Include="shader_vertex_2" />
-    <None Include="fragment_shader_text" />
-    <None Include="vertex_shader_text" />
+    <None Include="shader_fragment_text" />
+    <None Include="shader_vertex_text" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
