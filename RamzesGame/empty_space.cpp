@@ -15,10 +15,10 @@ int Empty_Space::can_go(int direction, const Empty_Space& empty_space) {
         if (posY  +1 != 6) result = 1;
     }
     if (direction == 3) {
-        if (posX + 1 != -1) result = 1;
+        if (posX + 1 != 8) result = 1;
     }
     if (direction == 4) {
-        if (posY - 1 != 8) result = 1;
+        if (posY - 1 != -1) result = 1;
     }
     return result;
 }

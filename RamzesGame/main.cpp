@@ -211,6 +211,14 @@ int main() {
     int current_player_turn = 0;
     int current_player_turn_core = 0;
     float plus_position = 0;
+    int drawn_previous = drawn;
+    int go_draw = 0;
+
+    std::string text_value_1 = "a";
+    std::string text_value_2 = "b";
+    std::string text_value_3 = "c";
+    std::string text_value_4 = "d";
+    std::string text_value_5 = "e";
 
     // RANDOM
     std::random_device rd;
@@ -218,7 +226,9 @@ int main() {
 
     std::uniform_int_distribution<int> distribution(1, 5);
     drawn = distribution(gen);
-    drawn = 1;
+
+    glm::vec3 color;
+    color = glm::vec3(1.0f, 0.0f, 0.0f);
 
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -265,21 +275,25 @@ int main() {
                 empty_space_on_board.swap_pos(current_pyramid, empty_space_on_board, pyramids);
             }
             move_direction = 0;
+
+            if (circles[empty_space_on_board.posX][empty_space_on_board.posY].value != 0) {
+                if (circles[empty_space_on_board.posX][empty_space_on_board.posY].value != drawn) {
+                    current_player_turn ^= 1;
+                }
+                if (circles[empty_space_on_board.posX][empty_space_on_board.posY].value == drawn) {
+                    players[current_player_turn].points += 50;
+                    drawn_previous = drawn;
+                    do {
+                        std::uniform_int_distribution<int> distribution(1, 5);
+                        drawn = distribution(gen);
+                    } while (drawn == drawn_previous);
+
+                    current_player_turn_core ^= 1;
+                    current_player_turn = current_player_turn_core;   
+                }   
+            }
         }
 
-        // GAME 
-        //CHECK BOARD VALUE 
-        if (circles[empty_space_on_board.posX][empty_space_on_board.posY].value == drawn) {
-            players[0].points = 1000;
-        }
-
-        std::uniform_int_distribution<int> distribution(1, 5);
-        //drawn = distribution(gen);
-
-
-
-
-      
         // RENDER 
         axis.render(shader_main, view, projection);
         border.render(shader_main, view, projection);
@@ -294,10 +308,11 @@ int main() {
         // TEXT PRINTING
         RenderText(textShader, "Player 1: " + std::to_string(players[0].points), 25.0f, 1000.0f, 0.5f, glm::vec3(0.9, 0.0f, 0.0f));
         RenderText(textShader, "Player 2: " + std::to_string(players[1].points), 25.0f, 970.0f, 0.5f, glm::vec3(0.0, 1.0f, 0.0f));
-        RenderText(textShader, "+" , 150.0f, 1000.0f, 0.5f, glm::vec3(0.0, 0.0f, 1.0f));
+        RenderText(textShader, "+" , 10.0f, plus_position, 0.5f, glm::vec3(0.0, 0.0f, 1.0f));
         if (current_player_turn == 0) plus_position = 1000.0f;
         if (current_player_turn == 1) plus_position = 970.0f;
-        RenderText(textShader, "Go to: " + std::to_string(drawn), 525.0f, 1000.0f, 0.5f, glm::vec3(0.0, 1.0f, 0.0f));
+        RenderText(textShader, "Go to: ", 1800.0f, 1000.0f, 0.5f, glm::vec3(0.0, 0.0f, 0.0f));
+        RenderText(textShader, std::to_string(drawn), 1875.0f, 1000.0f, 0.5f, color_value(drawn));
 
         // KEYBOARD
         for (int i = 0; i < 10; i++) previousKeyState[i] = currentKeyState[i];       

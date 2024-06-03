@@ -70,15 +70,15 @@ void set_circles_default(Circle circles[8][6]){
 
 void  set_board_circles(Circle circles[8][6]) {
     circles[3][2].change_color(1.0f, 0.0f, 0.0f);
-    //circles[1][3].change_color(0.0f, 1.0f, 0.0f);
-    //circles[0][5].change_color(0.0f, 0.0f, 1.0f);
-    //circles[7][2].change_color(1.0f, 0.5f, 0.0f);
-    //circles[5][5].change_color(0.5f, 0.0f, 0.5f);
+    circles[1][3].change_color(0.0f, 1.0f, 0.0f);
+    circles[0][5].change_color(0.0f, 0.0f, 1.0f);
+    circles[7][2].change_color(1.0f, 0.5f, 0.0f);
+    circles[5][5].change_color(0.5f, 0.0f, 0.5f);
     circles[3][2].value = 1;
-    //circles[1][3].value = 2;
-    //circles[0][5].value = 3;
-    //circles[7][2].value = 4;
-    //circles[5][5].value = 5;
+    circles[1][3].value = 2;
+    circles[0][5].value = 3;
+    circles[7][2].value = 4;
+    circles[5][5].value = 5;
 }
 
 void set_circles_vector(Circle circles[8][6], float x, float y, float z) {
@@ -93,6 +93,17 @@ void set_pyramids_vector(Pyramid pyramids[], float x, float y, float z) {
     for (int i = 0; i < 47; i++) {
         pyramids[i].move(x, y, z);
     }
+}
+
+glm::vec3 color_value(int value) {
+    glm::vec3 color;
+    color = glm::vec3(0.0f, 0.0f, 0.0f);
+    if (value == 1) color = glm::vec3(1.0f, 0.0f, 0.0f); // Red
+    if (value == 2) color = glm::vec3(0.0f, 1.0f, 0.0f); // Green
+    if (value == 3) color = glm::vec3(0.0f, 0.0f, 1.0f); // Blue
+    if (value == 4) color = glm::vec3(1.0f, 0.5f, 0.0f); // Orange
+    if (value == 5) color = glm::vec3(0.5f, 0.0f, 0.5f); // Purple
+    return color;
 }
 
 
