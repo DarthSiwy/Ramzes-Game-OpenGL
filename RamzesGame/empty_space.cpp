@@ -9,16 +9,16 @@ Empty_Space::Empty_Space(int x, int y) : posX(x), posY(y) {
 int Empty_Space::can_go(int direction, const Empty_Space& empty_space) {
     int result = 0;
     if (direction == 1) {
-        if (posX - 1 != 0) result = 1;
+        if (posX - 1 != -1) result = 1;
     }
     if (direction == 2) {
-        if (posY  +1 != 7) result = 1;
+        if (posY  +1 != 6) result = 1;
     }
     if (direction == 3) {
-        if (posX + 1 != 9) result = 1;
+        if (posX + 1 != -1) result = 1;
     }
     if (direction == 4) {
-        if (posY - 1 != 0) result = 1;
+        if (posY - 1 != 8) result = 1;
     }
     return result;
 }

@@ -159,7 +159,7 @@ int main() {
     Pyramid pyramids[47];
     Circle circles[8][6];
     Circle sand(50.0f);
-    Empty_Space empty_space_on_board(8,6);
+    Empty_Space empty_space_on_board(7,5);
     Player players[2];
 
     // STARTING FUNCTIONS
@@ -209,6 +209,8 @@ int main() {
     int drawn = 0;
     int if_collected = 0;
     int current_player_turn = 0;
+    int current_player_turn_core = 0;
+    float plus_position = 0;
 
     // RANDOM
     std::random_device rd;
@@ -216,6 +218,7 @@ int main() {
 
     std::uniform_int_distribution<int> distribution(1, 5);
     drawn = distribution(gen);
+    drawn = 1;
 
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -243,6 +246,9 @@ int main() {
         shader_main.setMat4("view", view);
         shader_main.setMat4("model", model);
 
+        // UPDATE KEYBOARD
+        updateKeyboardState(window, currentKeyState);
+
         // MOVEMENTS
         if (animation == 0) {
             if (currentKeyState[1] == GLFW_PRESS && previousKeyState[1] == GLFW_RELEASE) move_direction = 10;
@@ -262,9 +268,16 @@ int main() {
         }
 
         // GAME 
+        //CHECK BOARD VALUE 
+        if (circles[empty_space_on_board.posX][empty_space_on_board.posY].value == drawn) {
+            players[0].points = 1000;
+        }
 
         std::uniform_int_distribution<int> distribution(1, 5);
         //drawn = distribution(gen);
+
+
+
 
       
         // RENDER 
@@ -278,15 +291,15 @@ int main() {
         }
         for (int i = 0; i < 47; i++)    pyramids[i].render(shader_2, view, projection, model, animation);   
 
-        // UPDATE KEYBOARD
-        updateKeyboardState(window, currentKeyState);
-
         // TEXT PRINTING
         RenderText(textShader, "Player 1: " + std::to_string(players[0].points), 25.0f, 1000.0f, 0.5f, glm::vec3(0.9, 0.0f, 0.0f));
         RenderText(textShader, "Player 2: " + std::to_string(players[1].points), 25.0f, 970.0f, 0.5f, glm::vec3(0.0, 1.0f, 0.0f));
-
+        RenderText(textShader, "+" , 150.0f, 1000.0f, 0.5f, glm::vec3(0.0, 0.0f, 1.0f));
+        if (current_player_turn == 0) plus_position = 1000.0f;
+        if (current_player_turn == 1) plus_position = 970.0f;
         RenderText(textShader, "Go to: " + std::to_string(drawn), 525.0f, 1000.0f, 0.5f, glm::vec3(0.0, 1.0f, 0.0f));
 
+        // KEYBOARD
         for (int i = 0; i < 10; i++) previousKeyState[i] = currentKeyState[i];       
         // SWAP BUFFERS
         glfwSwapBuffers(window);

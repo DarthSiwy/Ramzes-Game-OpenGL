@@ -44,8 +44,8 @@ void set_pyramids_default(Pyramid pyramids[]) {
     int index = 0;
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 6; j++) {
-            pyramids[index].posX = i+1;
-            pyramids[index].posY = j+1;
+            pyramids[index].posX = i;
+            pyramids[index].posY = j;
             pyramids[index].move(x, 0.0f, z);
             x += step;
             index++;
@@ -70,15 +70,15 @@ void set_circles_default(Circle circles[8][6]){
 
 void  set_board_circles(Circle circles[8][6]) {
     circles[3][2].change_color(1.0f, 0.0f, 0.0f);
-    circles[1][3].change_color(0.0f, 1.0f, 0.0f);
-    circles[0][5].change_color(0.0f, 0.0f, 1.0f);
-    circles[7][2].change_color(1.0f, 0.5f, 0.0f);
-    circles[5][5].change_color(0.5f, 0.0f, 0.5f);
+    //circles[1][3].change_color(0.0f, 1.0f, 0.0f);
+    //circles[0][5].change_color(0.0f, 0.0f, 1.0f);
+    //circles[7][2].change_color(1.0f, 0.5f, 0.0f);
+    //circles[5][5].change_color(0.5f, 0.0f, 0.5f);
     circles[3][2].value = 1;
-    circles[1][3].value = 2;
-    circles[0][5].value = 3;
-    circles[7][2].value = 4;
-    circles[5][5].value = 5;
+    //circles[1][3].value = 2;
+    //circles[0][5].value = 3;
+    //circles[7][2].value = 4;
+    //circles[5][5].value = 5;
 }
 
 void set_circles_vector(Circle circles[8][6], float x, float y, float z) {
