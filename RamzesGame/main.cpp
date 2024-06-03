@@ -236,6 +236,7 @@ int main() {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        //camera.DisplayPosition();
 
         // MATRIX CREATE
         glm::mat4 model = glm::mat4(1.0f);
@@ -249,8 +250,6 @@ int main() {
 
         // UPDATE KEYBOARD
         updateKeyboardState(window, currentKeyState);
-
-        camera.DisplayPosition();
 
         // MOVEMENTS
         if (animation == 0) {
