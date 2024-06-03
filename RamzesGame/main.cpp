@@ -206,6 +206,16 @@ int main() {
     int move_direction = 0;
     int animation = 0;
     int current_pyramid = 0;
+    int drawn = 0;
+    int if_collected = 0;
+    int current_player_turn = 0;
+
+    // RANDOM
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    std::uniform_int_distribution<int> distribution(1, 5);
+    drawn = distribution(gen);
 
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   // RENDER LOOP      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -232,6 +242,30 @@ int main() {
         shader_main.setMat4("projection", projection);
         shader_main.setMat4("view", view);
         shader_main.setMat4("model", model);
+
+        // MOVEMENTS
+        if (animation == 0) {
+            if (currentKeyState[1] == GLFW_PRESS && previousKeyState[1] == GLFW_RELEASE) move_direction = 10;
+            if (currentKeyState[2] == GLFW_PRESS && previousKeyState[2] == GLFW_RELEASE) move_direction = 30;
+            if (currentKeyState[3] == GLFW_PRESS && previousKeyState[3] == GLFW_RELEASE) move_direction = 20;
+            if (currentKeyState[4] == GLFW_PRESS && previousKeyState[4] == GLFW_RELEASE) move_direction = 40;
+        }
+
+        if (move_direction > 9) {
+            move_direction /= 10;
+            current_pyramid = empty_space_on_board.find_pyramid(move_direction, empty_space_on_board, pyramids);
+            if (empty_space_on_board.can_go(move_direction, empty_space_on_board)) {
+                pyramids[current_pyramid].move_direction(move_direction, animation);
+                empty_space_on_board.swap_pos(current_pyramid, empty_space_on_board, pyramids);
+            }
+            move_direction = 0;
+        }
+
+        // GAME 
+
+        std::uniform_int_distribution<int> distribution(1, 5);
+        //drawn = distribution(gen);
+
       
         // RENDER 
         axis.render(shader_main, view, projection);
@@ -244,30 +278,14 @@ int main() {
         }
         for (int i = 0; i < 47; i++)    pyramids[i].render(shader_2, view, projection, model, animation);   
 
+        // UPDATE KEYBOARD
+        updateKeyboardState(window, currentKeyState);
+
         // TEXT PRINTING
         RenderText(textShader, "Player 1: " + std::to_string(players[0].points), 25.0f, 1000.0f, 0.5f, glm::vec3(0.9, 0.0f, 0.0f));
         RenderText(textShader, "Player 2: " + std::to_string(players[1].points), 25.0f, 970.0f, 0.5f, glm::vec3(0.0, 1.0f, 0.0f));
 
-        // UPDATE KEYBOARD
-        updateKeyboardState(window, currentKeyState);
-
-        // MOVEMENTS
-        if (animation == 0){
-            if (currentKeyState[1] == GLFW_PRESS && previousKeyState[1] == GLFW_RELEASE) move_direction = 10;
-            if (currentKeyState[2] == GLFW_PRESS && previousKeyState[2] == GLFW_RELEASE) move_direction = 30;
-            if (currentKeyState[3] == GLFW_PRESS && previousKeyState[3] == GLFW_RELEASE) move_direction = 20;
-            if (currentKeyState[4] == GLFW_PRESS && previousKeyState[4] == GLFW_RELEASE) move_direction = 40;
-        }
-
-        if (move_direction > 9) {
-            move_direction /= 10;
-            current_pyramid = empty_space_on_board.find_pyramid(move_direction, empty_space_on_board, pyramids);
-            if (empty_space_on_board.can_go(move_direction, empty_space_on_board)) {              
-                pyramids[current_pyramid].move_direction(move_direction, animation);       
-                empty_space_on_board.swap_pos(current_pyramid, empty_space_on_board, pyramids);
-            }
-            move_direction = 0;
-        }
+        RenderText(textShader, "Go to: " + std::to_string(drawn), 525.0f, 1000.0f, 0.5f, glm::vec3(0.0, 1.0f, 0.0f));
 
         for (int i = 0; i < 10; i++) previousKeyState[i] = currentKeyState[i];       
         // SWAP BUFFERS
