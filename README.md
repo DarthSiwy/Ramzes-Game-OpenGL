@@ -11,14 +11,16 @@ A simple C++ game using OpenGL to create a 3D representation of Ramzes II board 
 - [License](#license)
 
 ## Features
-- 
-- 
+- Ramzes Game in OpenGL C++
+ 
 
 
 ## Controls
 ### Moves clockwise
-- 
-- 
+- Arrows - moving pyramids
+- WASD - Camera
+- Scrool - Camera Zoom
+- Space/Shift - Camera Up/Down
 
 - ESC - exit
 - H - tooghle help menu

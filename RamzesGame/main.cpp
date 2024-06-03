@@ -7,7 +7,6 @@
 
 #include "stb.cpp"
 #include "shader_s.h"
-
 #include "camera.h"
 #include "axis.h"
 #include "pyramid.h"
@@ -158,7 +157,7 @@ int main() {
     Floor floor(0,0,12,16);
     Pyramid pyramids[47];
     Circle circles[8][6];
-    Circle sand(30.0f);
+    Circle sand(20.0f);
     Empty_Space empty_space_on_board(7,5);
     Player players[2];
 
@@ -169,7 +168,7 @@ int main() {
     set_circles_default(circles);
     set_circles_vector(circles, 1, 0.01, 1);
     set_board_circles(circles);
-    sand.move(6, -10, 8);
+    sand.move(6, -1.9, 8);
     sand.change_color(0.85f, 0.65f, 0.13f);
     
     // TEXTURES
@@ -288,7 +287,7 @@ int main() {
         // RENDER 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture1);
-        axis.render(shader_main, view, projection);
+        //axis.render(shader_main, view, projection);
         border.render(shader_main, view, projection);
         box.render(shader_1, view, projection, model);
         floor.render(shader_1, view, projection, model);
