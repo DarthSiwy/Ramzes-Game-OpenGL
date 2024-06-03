@@ -158,7 +158,7 @@ int main() {
     Floor floor(0,0,12,16);
     Pyramid pyramids[47];
     Circle circles[8][6];
-    Circle sand(40.0f);
+    Circle sand(30.0f);
     Empty_Space empty_space_on_board(7,5);
     Player players[2];
 
@@ -191,11 +191,11 @@ int main() {
     stbi_image_free(data);  
     
     // CAMERA POSITION
-    camera.Position.x = 12.0f;
-    camera.Position.y = 14.0f;
-    camera.Position.z = 20.0f;
-    camera.Pitch += -40.0f;
-    camera.Yaw += -40.0f;
+    camera.Position.x = 15.7f;
+    camera.Position.y = 16.9f;
+    camera.Position.z = 22.4f;
+    camera.Pitch += -50.0f;
+    camera.Yaw += -30.0f;
     camera.updateCameraVectors();
 
     // keyboard
