@@ -158,14 +158,14 @@ int main() {
     Floor floor(0,0,12,16);
     Pyramid pyramids[47];
     Circle circles[8][6];
-    Circle sand(50.0f);
+    Circle sand(40.0f);
     Empty_Space empty_space_on_board(7,5);
     Player players[2];
 
     // STARTING FUNCTIONS
     std::vector<std::vector<int>> board_pyramids;
     set_pyramids_default(pyramids);
-    set_pyramids_vector(pyramids,  1, -1.02, 1);
+    set_pyramids_vector(pyramids,  1, 0.02, 1);
     set_circles_default(circles);
     set_circles_vector(circles, 1, 0.01, 1);
     set_board_circles(circles);
@@ -191,8 +191,8 @@ int main() {
     stbi_image_free(data);  
     
     // CAMERA POSITION
-    camera.Position.x = 14.0f;
-    camera.Position.y = 10.0f;
+    camera.Position.x = 12.0f;
+    camera.Position.y = 14.0f;
     camera.Position.z = 20.0f;
     camera.Pitch += -40.0f;
     camera.Yaw += -40.0f;
@@ -207,23 +207,14 @@ int main() {
     int animation = 0;
     int current_pyramid = 0;
     int drawn = 0;
-    int if_collected = 0;
     int current_player_turn = 0;
     int current_player_turn_core = 0;
     float plus_position = 0;
     int drawn_previous = drawn;
-    int go_draw = 0;
-
-    std::string text_value_1 = "a";
-    std::string text_value_2 = "b";
-    std::string text_value_3 = "c";
-    std::string text_value_4 = "d";
-    std::string text_value_5 = "e";
 
     // RANDOM
     std::random_device rd;
     std::mt19937 gen(rd());
-
     std::uniform_int_distribution<int> distribution(1, 5);
     drawn = distribution(gen);
 
@@ -259,6 +250,8 @@ int main() {
         // UPDATE KEYBOARD
         updateKeyboardState(window, currentKeyState);
 
+        camera.DisplayPosition();
+
         // MOVEMENTS
         if (animation == 0) {
             if (currentKeyState[1] == GLFW_PRESS && previousKeyState[1] == GLFW_RELEASE) move_direction = 10;
@@ -287,7 +280,6 @@ int main() {
                         std::uniform_int_distribution<int> distribution(1, 5);
                         drawn = distribution(gen);
                     } while (drawn == drawn_previous);
-
                     current_player_turn_core ^= 1;
                     current_player_turn = current_player_turn_core;   
                 }   
@@ -295,16 +287,18 @@ int main() {
         }
 
         // RENDER 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
         axis.render(shader_main, view, projection);
         border.render(shader_main, view, projection);
         box.render(shader_1, view, projection, model);
         floor.render(shader_1, view, projection, model);
         sand.render(shader_main, view, projection);
+        for (int i = 0; i < 47; i++)    pyramids[i].render(shader_2, view, projection, model, animation);
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 6; j++) circles[i][j].render(shader_main, view, projection);
         }
-        for (int i = 0; i < 47; i++)    pyramids[i].render(shader_2, view, projection, model, animation);   
-
+        
         // TEXT PRINTING
         RenderText(textShader, "Player 1: " + std::to_string(players[0].points), 25.0f, 1000.0f, 0.5f, glm::vec3(0.9, 0.0f, 0.0f));
         RenderText(textShader, "Player 2: " + std::to_string(players[1].points), 25.0f, 970.0f, 0.5f, glm::vec3(0.0, 1.0f, 0.0f));

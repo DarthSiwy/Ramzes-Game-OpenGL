@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <iomanip>
+#include <iostream>
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
@@ -114,7 +115,7 @@ public:
         if (Zoom > 45.0f)
             Zoom = 45.0f;
     }
-    /*
+    
     void DisplayPosition() const {
         std::cout << std::fixed << std::setprecision(2)
             << Position.x << "\t"
@@ -127,7 +128,7 @@ public:
             //<< Pitch << "\t"
             << std::endl;
     }
-    */
+    
 
     //private:
         // calculates the front vector from the Camera's (updated) Euler Angles
