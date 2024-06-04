@@ -164,7 +164,7 @@ int main() {
     // STARTING FUNCTIONS
     std::vector<std::vector<int>> board_pyramids;
     set_pyramids_default(pyramids);
-    set_pyramids_vector(pyramids,  1, 0.02, 1);
+    set_pyramids_vector(pyramids,  1, -1.02, 1);
     set_circles_default(circles);
     set_circles_vector(circles, 1, 0.01, 1);
     set_board_circles(circles);
